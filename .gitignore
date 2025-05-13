@@ -2,3 +2,5 @@
 .env
 venv
 index
+*.json
+*.index

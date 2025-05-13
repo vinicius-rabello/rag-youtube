@@ -8,6 +8,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 import faiss
 
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -15,6 +16,15 @@ load_dotenv(override=True)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 def process_youtube_video(video_id):
+    if os.path.exists(f"data/{video_id}_index.index") and os.path.exists(f"data/{video_id}_chunks.json"):
+        # Load the existing FAISS index and chunks
+        index = faiss.read_index(f"data/{video_id}_index.index")
+        with open(f"data/{video_id}_chunks.json", "r") as f:
+            chunks_with_embeddings = json.load(f)
+        embedding_dim = index.d
+
+        return index, chunks_with_embeddings, embedding_dim
+    # If the index and chunks do not exist, process the video
     # Gets the transcript of a YouTube video and parses it into chunks
     transcript = get_transcript(video_id)
     chunks = parse_transcript(transcript, 60)
@@ -29,13 +39,15 @@ def process_youtube_video(video_id):
     # Adds the embedding vectors to the FAISS index
     index.add(embedding_vectors)
 
-    # # Saves the FAISS index to a local file
-    # faiss.write_index(index, "resources/index")
+    # Saves the FAISS index to a local file
+    faiss.write_index(index, f"data/{video_id}_index.index")
+
+    with open(f"data/{video_id}_chunks.json", "w") as f:
+        json.dump(chunks_with_embeddings, f, ensure_ascii=False)
 
     return index, chunks_with_embeddings, embedding_dim
 
 def process_query(query, index, chunks_with_embeddings, embedding_dim, model_name):
-    # index = faiss.read_index("resources/index")
     embedding_model = OpenAIEmbeddings(model=model_name)
 
     retriever = MetadataFAISSRetriever(index, embedding_model, embedding_dim, chunks_with_embeddings)
