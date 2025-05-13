@@ -1,4 +1,5 @@
 from rag.pipeline import process_youtube_video, process_query
+from rag.response_parser import parse_response
 
 video_id = input("Enter the YouTube video ID: ")
 print("Processing video...")
@@ -9,4 +10,5 @@ while True:
     if query.lower() == 'exit':
         break
     response, relevant_chunks = process_query(query, index, chunks, embedding_dim, "text-embedding-3-small")
-    print(response)
+    formatted_response = parse_response(response, relevant_chunks)
+    print(formatted_response)
