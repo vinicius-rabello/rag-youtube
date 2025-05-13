@@ -13,7 +13,7 @@ class MetadataFAISSRetriever:
     # O método retrieve busca os documentos mais relevantes com base na consulta e no papel do usuário.
     def retrieve(self, query):
         query_embedding = np.array(self.embedding_model.embed_query(query))
-        distances, indices = self.index.search(query_embedding.reshape(1, self.embedding_dim), k=5)
+        distances, indices = self.index.search(query_embedding.reshape(1, self.embedding_dim), k=15)
         
         retrieved_chunks = []
         for i in indices[0]:

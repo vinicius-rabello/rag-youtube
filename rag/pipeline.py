@@ -15,7 +15,7 @@ load_dotenv(override=True)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-def process_youtube_video(video_id):
+def process_youtube_video(video_id, languages=["en"]):
     if os.path.exists(f"data/{video_id}_index.index") and os.path.exists(f"data/{video_id}_chunks.json"):
         # Load the existing FAISS index and chunks
         index = faiss.read_index(f"data/{video_id}_index.index")
@@ -26,7 +26,7 @@ def process_youtube_video(video_id):
         return index, chunks_with_embeddings, embedding_dim
     # If the index and chunks do not exist, process the video
     # Gets the transcript of a YouTube video and parses it into chunks
-    transcript = get_transcript(video_id)
+    transcript = get_transcript(video_id, languages=languages)
     chunks = parse_transcript(transcript, 60)
 
     # Generates embeddings for the chunks and creates a FAISS index
@@ -42,7 +42,7 @@ def process_youtube_video(video_id):
     # Saves the FAISS index to a local file
     faiss.write_index(index, f"data/{video_id}_index.index")
 
-    with open(f"data/{video_id}_chunks.json", "w") as f:
+    with open(f"data/{video_id}_chunks.json", "w", encoding='utf-8') as f:
         json.dump(chunks_with_embeddings, f, ensure_ascii=False)
 
     return index, chunks_with_embeddings, embedding_dim
