@@ -1,9 +1,9 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 
-def get_transcript(video_id):
+def get_transcript(video_id, languages=['en']):
     ytt_api = YouTubeTranscriptApi()
     try:
-        transcript = ytt_api.fetch(video_id, languages=['en'])
+        transcript = ytt_api.fetch(video_id, languages=languages)
         return transcript
     except Exception as e:
         print(f"Error fetching transcript: {e}")
