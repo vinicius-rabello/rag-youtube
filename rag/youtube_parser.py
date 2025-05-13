@@ -2,8 +2,12 @@ from youtube_transcript_api import YouTubeTranscriptApi
 
 def get_transcript(video_id):
     ytt_api = YouTubeTranscriptApi()
-    transcript = ytt_api.fetch(video_id, languages=['en'])
-    return transcript
+    try:
+        transcript = ytt_api.fetch(video_id, languages=['en'])
+        return transcript
+    except Exception as e:
+        print(f"Error fetching transcript: {e}")
+        return None
 
 def parse_transcript(transcript, max_window_duration):
     snippets = transcript.snippets

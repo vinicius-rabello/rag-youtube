@@ -4,21 +4,21 @@ from langchain_core.documents import Document
 
 # Essa classe é responsável por recuperar documentos relevantes com base em um índice FAISS e um modelo de incorporação.
 class MetadataFAISSRetriever:
-    def __init__(self, index, embedding_model, embedding_dim, chunks):
+    def __init__(self, index, embedding_model, embedding_dim, chunks_with_embeddings):
         self.index = index
         self.embedding_model = embedding_model
         self.embedding_dim = embedding_dim
-        self.chunks = chunks
+        self.chunks_with_embeddings = chunks_with_embeddings
     
     # O método retrieve busca os documentos mais relevantes com base na consulta e no papel do usuário.
     def retrieve(self, query):
         query_embedding = np.array(self.embedding_model.embed_query(query))
-        distances, indices = self.index.search(query_embedding.reshape(1, self.embedding_dim), k=10)
+        distances, indices = self.index.search(query_embedding.reshape(1, self.embedding_dim), k=5)
         
         retrieved_chunks = []
         for i in indices[0]:
-            if i < len(self.chunks):
-                retrieved_chunks.append(self.chunks[i])
+            if i < len(self.chunks_with_embeddings):
+                retrieved_chunks.append(self.chunks_with_embeddings[i])
         
         return retrieved_chunks
     
@@ -28,7 +28,7 @@ class MetadataFAISSRetriever:
         
         chunk_embeddings = []
         for doc in retrieved_chunks:
-            chunk_embedding = np.array(self.embedding_model.embed_query(doc['text']))
+            chunk_embedding = np.array(doc['embedding'])
             chunk_embeddings.append(chunk_embedding)
         chunk_embeddings = np.array(chunk_embeddings)
         

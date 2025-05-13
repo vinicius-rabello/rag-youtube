@@ -1,4 +1,4 @@
-from pipeline import process_youtube_video, process_query
+from rag.pipeline import process_youtube_video, process_query
 
 video_id = input("Enter the YouTube video ID: ")
 print("Processing video...")
