@@ -1,7 +1,7 @@
-from rag.youtube_parser import get_transcript, parse_transcript
-from rag.embedder import generate_embeddings
-from rag.prompt_builder import build_prompt_from_file
-from rag.retriever import MetadataFAISSRetriever
+from backend.rag.youtube_parser import get_transcript, parse_transcript
+from backend.rag.embedder import generate_embeddings
+from backend.rag.prompt_builder import build_prompt_from_file
+from backend.rag.retriever import MetadataFAISSRetriever
 
 from langchain_openai import OpenAIEmbeddings, OpenAI
 from langchain.chains.combine_documents import create_stuff_documents_chain
@@ -16,10 +16,10 @@ load_dotenv(override=True)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 def process_youtube_video(video_id, languages=["en"]):
-    if os.path.exists(f"data/{video_id}_index.index") and os.path.exists(f"data/{video_id}_chunks.json"):
+    if os.path.exists(f"backend/data/{video_id}_index.index") and os.path.exists(f"backend/data/{video_id}_chunks.json"):
         # Load the existing FAISS index and chunks
-        index = faiss.read_index(f"data/{video_id}_index.index")
-        with open(f"data/{video_id}_chunks.json", "r") as f:
+        index = faiss.read_index(f"backend/data/{video_id}_index.index")
+        with open(f"backend/data/{video_id}_chunks.json", "r") as f:
             chunks_with_embeddings = json.load(f)
         embedding_dim = index.d
 
@@ -40,9 +40,9 @@ def process_youtube_video(video_id, languages=["en"]):
     index.add(embedding_vectors)
 
     # Saves the FAISS index to a local file
-    faiss.write_index(index, f"data/{video_id}_index.index")
+    faiss.write_index(index, f"backend/data/{video_id}_index.index")
 
-    with open(f"data/{video_id}_chunks.json", "w", encoding='utf-8') as f:
+    with open(f"backend/data/{video_id}_chunks.json", "w", encoding='utf-8') as f:
         json.dump(chunks_with_embeddings, f, ensure_ascii=False)
 
     return index, chunks_with_embeddings, embedding_dim

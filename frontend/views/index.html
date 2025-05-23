@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube RAG</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <section id="input-screen" class="screen">
+      <div class="input-container">
+        <h1>Chat with a YouTube video</h1>
+        <p>Enter a YouTube video URL below to start.</p>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="video-url"
+            placeholder="https://www.youtube.com/watch?v=example"
+          />
+          <div class="input-spinner" id="input-spinner"></div>
+        </div>
+        <button id="start-button">Start Chat</button>
+        <p id="error-message">Please enter a valid YouTube URL.</p>
+      </div>
+    </section>
+    <section id="chat-screen" class="screen hidden">
+      <div class="chat-container">
+        <div id="left-panel">
+          <iframe
+            width="540"
+            height="304"
+            src="https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1&mute=1"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div id="right-panel">
+          <div class="chat-header">
+            <h2>Chatbot</h2>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+          </div>
+          <div class="chat-input-container">
+            <input
+              type="text"
+              id="chat-input"
+              placeholder="Type your message..."
+            />
+            <button id="send-button">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+  <script src="main.js"></script>
+</html>

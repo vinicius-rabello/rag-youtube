@@ -1,5 +1,13 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 
+def get_video_id_from_youtube_url(youtube_url):
+    if "youtube.com/watch?v=" in youtube_url:
+        return youtube_url.split("v=")[1].split("&")[0]
+    elif "youtu.be/" in youtube_url:
+        return youtube_url.split("/")[-1]
+    else:
+        raise ValueError("Invalid YouTube URL")
+
 def get_transcript(video_id, languages=['en']):
     ytt_api = YouTubeTranscriptApi()
     try:

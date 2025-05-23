@@ -3,7 +3,12 @@ import numpy as np
 import os
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+import sys
+print(sys.executable)
+
+dotenv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.env')
+
+load_dotenv(dotenv_path, override=True)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
