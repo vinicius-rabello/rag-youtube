@@ -53,7 +53,7 @@ def process_query(query, index, chunks_with_embeddings, embedding_dim, model_nam
     retriever = MetadataFAISSRetriever(index, embedding_model, embedding_dim, chunks_with_embeddings)
     retrieved_docs = retriever.retrieve(query)
     most_relevant_docs = retriever.score_documents(query, retrieved_docs)
-    prompt_template = build_prompt_from_file("resources/base_prompt.txt")
+    prompt_template = build_prompt_from_file("backend/resources/base_prompt.txt")
     llm = OpenAI(model="gpt-4.1-nano", temperature=0.1)
     document_chain = create_stuff_documents_chain(llm, prompt_template)
     response = document_chain.invoke({"input": query, "context": most_relevant_docs})
