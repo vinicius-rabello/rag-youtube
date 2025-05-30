@@ -80,7 +80,6 @@ startButton.addEventListener("click", async () => {
   inputSpinner.classList.add("visible");
   const res = await processVideo(videoUrl).then((res) => {
     if (res.status === 200) {
-      console.log("Video processed successfully");
       inputScreen.classList.add("hidden");
       chatScreen.classList.remove("hidden");
       const videoPlayer = document.getElementById("video-player");
@@ -125,7 +124,14 @@ function updatePendingMessage(id, content) {
   if (intervalId) {
     clearInterval(intervalId);
   }
-  pendingMessage.textContent = content;
+
+  messages.forEach((message) => {
+    if (message.id === id) {
+      message.content = content;
+      renderMessages();
+      return;
+    }
+  })
 }
 
 function animateTypingDots(messageId) {
@@ -154,6 +160,8 @@ function renderMessages() {
     messageElement.id = message.id;
     chatMessages.appendChild(messageElement);
   });
+
+  chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
 sendButton.addEventListener("click", async () => {
@@ -164,12 +172,13 @@ sendButton.addEventListener("click", async () => {
   const pendingMessageId = addMessage("assistant", "...");
   animateTypingDots(pendingMessageId);
 
-  chatInput.value = "";
   chatInput.disabled = true;
   sendButton.disabled = true;
+  const query = chatInput.value;
+  chatInput.value = "";
 
   try {
-    const assistantResponse = await processQuery(chatInput.value, videoPlayer.dataset.videoId);
+    const assistantResponse = await processQuery(query, videoPlayer.dataset.videoId);
     updatePendingMessage(pendingMessageId, assistantResponse.response);
   } catch (error) {
     console.error("Error processing query:", error);
